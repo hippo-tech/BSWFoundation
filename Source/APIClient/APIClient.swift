@@ -39,6 +39,11 @@ open class APIClient {
         self.workerQueue = queue
     }
 
+    public func performSimpleRequest<T: Decodable>(_ request: Request<T>) -> Task<APIClient.Response> {
+        return createURLRequest(endpoint: request.endpoint)
+                ≈> networkFetcher.fetchData
+    }
+    
     public func perform<T: Decodable>(_ request: Request<T>) -> Task<T> {
         return createURLRequest(endpoint: request.endpoint)
                 ≈> networkFetcher.fetchData
@@ -120,8 +125,8 @@ extension APIClient {
     }
     
     public struct Response {
-        let data: Data
-        let httpResponse: HTTPURLResponse
+        public let data: Data
+        public let httpResponse: HTTPURLResponse
         
         public init(data: Data, httpResponse: HTTPURLResponse) {
             self.data = data
